@@ -6,24 +6,18 @@ import VueAxios from "vue-axios";
 import axios from "axios";
 Vue.use(VueAxios, axios);
 
-// import state from './state';
-// import * as getters from './getters';
-// import * as mutations from './mutattions';
-// import * as actions from './actions';
+
 
 
 export default new Vuex.Store({
 
-    // state,
-    // getters,
-    // mutations,
-    // actions,
+
 
     state: {
         email: '',
         proData: undefined,
         productinfo: undefined,
-        catID: null,
+        filter: null,
         P_URL: '',
         URL: "http://127.0.0.1:8000/api/shop",
 
@@ -50,14 +44,14 @@ export default new Vuex.Store({
         },
 
         iscat(state, payload) {
-            state.P_URL = state.URL + payload.catID
+            state.P_URL = state.URL + payload.filter
             console.log(state.P_URL)
             Vue.axios.get(state.P_URL).then((res) => {
                 state.proData = res.data.product
 
             })
-            console.log(state.proData)
-            console.log(payload.catID)
+            // console.log(state.proData)
+            // console.log(payload.catID)
             return state.proData
         }
 

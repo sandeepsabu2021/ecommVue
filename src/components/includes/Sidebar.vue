@@ -7,14 +7,9 @@
           <!--category-productsr-->
 
           <div class="panel panel-default">
-            <div
-              class="panel-heading"
-              
-            >
+            <div class="panel-heading">
               <h4 class="panel-title">
-                <a @click="getCat('/')">
-                  ALL
-                </a>
+                <a @click="getFilter('/')"> ALL </a>
               </h4>
             </div>
             <div
@@ -23,9 +18,7 @@
               :key="category.id"
             >
               <h4 class="panel-title">
-                <a @click="getCat('/'+category.id)">{{
-                  category.name
-                }}</a>
+                <a @click="getFilter('/' + category.id)">{{ category.name }}</a>
               </h4>
             </div>
           </div>
@@ -37,28 +30,8 @@
           <h2>Brands</h2>
           <div class="brands-name">
             <ul class="nav nav-pills nav-stacked">
-              <li>
-                <a href="#"> <span class="pull-right">(50)</span>Acne</a>
-              </li>
-              <li>
-                <a href="#"> <span class="pull-right">(56)</span>Grüne Erde</a>
-              </li>
-              <li>
-                <a href="#"> <span class="pull-right">(27)</span>Albiro</a>
-              </li>
-              <li>
-                <a href="#"> <span class="pull-right">(32)</span>Ronhill</a>
-              </li>
-              <li>
-                <a href="#"> <span class="pull-right">(5)</span>Oddmolly</a>
-              </li>
-              <li>
-                <a href="#"> <span class="pull-right">(9)</span>Boudestijn</a>
-              </li>
-              <li>
-                <a href="#">
-                  <span class="pull-right">(4)</span>Rösch creative culture</a
-                >
+              <li v-for="brand in brandData" :key="brand.brand">
+                <a v-if="brand.brand != null" @click="getFilter('/' + brand.brand)"> <span class="pull-right">({{brand.brand_count}})</span>{{brand.brand}}</a>
               </li>
             </ul>
           </div>
@@ -108,28 +81,35 @@ export default {
   name: "Sidebar",
   computed: {
     ...mapState({
-      catId: (state) => state.catID,
+      filter: (state) => state.filter,
     }),
   },
   data() {
     return {
       catData: undefined,
+      brandData: undefined,
       id: null,
     };
   },
   mounted() {
     const C_URL = "http://127.0.0.1:8000/api/category";
+    const B_URL = "http://127.0.0.1:8000/api/brand";
     Vue.axios.get(C_URL).then((res) => {
       // console.log(res.data);
       this.catData = res.data.category;
       // console.log(this.catData);
     });
+    Vue.axios.get(B_URL).then((res) => {
+      // console.log(res.data);
+      this.brandData = res.data.brand;
+      // console.log(this.catData);
+    });
   },
   methods: {
-    getCat(id) {
+    getFilter(id) {
       store.dispatch({
         type: type.Category,
-        catID: id,
+        filter: id,
       });
     },
   },

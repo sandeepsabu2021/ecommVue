@@ -1209,6 +1209,11 @@ h2.title {
   width: 100%;
 }
 
+.rel-product img {
+  border: 1px solid #F7F7F0;
+  height: 150px;
+}
+
 .view-product h3 {
   background: #FE980F;
   bottom: 0;
