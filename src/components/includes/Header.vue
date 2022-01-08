@@ -147,20 +147,7 @@
               <div class="mainmenu pull-left">
                 <ul class="nav navbar-nav collapse navbar-collapse">
                   <li><router-link to="/">Home</router-link></li>
-                  <li class="dropdown">
-                    <a href="#">Shop<i class="fa fa-angle-down"></i></a>
-                    <ul role="menu" class="sub-menu">
-                      <li><router-link to="/product">Products</router-link></li>
-                      <li>
-                        <router-link to="/product-details"
-                          >Product Details</router-link
-                        >
-                      </li>
-                      <li><a href="checkout.html">Checkout</a></li>
-                      <li><a href="cart.html">Cart</a></li>
-                      <li><router-link to="/login">Login</router-link></li>
-                    </ul>
-                  </li>
+                  <li><router-link to="/product">Products</router-link></li>
                   <li class="dropdown">
                     <a href="#">Blog<i class="fa fa-angle-down"></i></a>
                     <ul role="menu" class="sub-menu">
@@ -199,7 +186,6 @@ export default {
     ...mapState({
       mail: (state) => state.email,
     }),
-  
   },
   methods: {
     logout() {
