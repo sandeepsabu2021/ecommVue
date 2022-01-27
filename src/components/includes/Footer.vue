@@ -26,7 +26,7 @@
                     </div>
                   </a>
                   <p>Circle of Hands</p>
-                  <h2>24 DEC 2014</h2>
+                  <h2>15 JAN 2022</h2>
                 </div>
               </div>
 
@@ -41,7 +41,7 @@
                     </div>
                   </a>
                   <p>Circle of Hands</p>
-                  <h2>24 DEC 2014</h2>
+                  <h2>15 JAN 2022</h2>
                 </div>
               </div>
 
@@ -56,7 +56,7 @@
                     </div>
                   </a>
                   <p>Circle of Hands</p>
-                  <h2>24 DEC 2014</h2>
+                  <h2>15 JAN 2022</h2>
                 </div>
               </div>
 
@@ -71,7 +71,7 @@
                     </div>
                   </a>
                   <p>Circle of Hands</p>
-                  <h2>24 DEC 2014</h2>
+                  <h2>15 JAN 2022</h2>
                 </div>
               </div>
             </div>
@@ -96,7 +96,7 @@
                   <li><a href="#">Contact Us</a></li>
                   <li><a href="#">Order Status</a></li>
                   <li><a href="#">Change Location</a></li>
-                  <li><a href="#">FAQ’s</a></li>
+                  <li><a href="#">FAQ's</a></li>
                 </ul>
               </div>
             </div>
@@ -159,14 +159,12 @@
         <div class="container">
           <div class="row">
             <p class="pull-left">
-              Copyright © 2013 E-SHOPPER Inc. All rights reserved.
+              Copyright © 2022 E-SHOPPER Inc. All rights reserved.
             </p>
             <p class="pull-right">
               Designed by
               <span
-                ><a target="_blank" href="http://www.themeum.com"
-                  >Themeum</a
-                ></span
+                >Sandeep Sabu</span
               >
             </p>
           </div>

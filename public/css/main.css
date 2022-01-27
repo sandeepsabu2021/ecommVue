@@ -286,6 +286,8 @@ a#scrollUp i{
   animation: fadeInUp 400ms;
 }
 
+
+
 ul.sub-menu {
 	position: absolute;
 	top: 30px;
@@ -300,6 +302,8 @@ ul.sub-menu {
 	display: none;
 	z-index: 999;
 }
+
+
 
 .dropdown ul.sub-menu li .active{
   color: #FDB45E;
@@ -584,6 +588,9 @@ ul.sub-menu {
   padding-left: 100px;
 }
 
+.btn-text{
+  color: white;
+}
 
 .pricing {
   position: absolute;

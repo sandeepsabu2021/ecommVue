@@ -9,7 +9,9 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title">
-                <a @click="getFilter('/')"> ALL </a>
+                <router-link to="/product">
+                  <a @click="getFilter('/')"> ALL </a></router-link
+                >
               </h4>
             </div>
             <div
@@ -18,7 +20,11 @@
               :key="category.id"
             >
               <h4 class="panel-title">
-                <a @click="getFilter('/' + category.id)">{{ category.name }}</a>
+                <router-link to="/product">
+                  <a @click="getFilter('/' + category.id)">{{
+                    category.name
+                  }}</a></router-link
+                >
               </h4>
             </div>
           </div>
@@ -31,31 +37,20 @@
           <div class="brands-name">
             <ul class="nav nav-pills nav-stacked">
               <li v-for="brand in brandData" :key="brand.brand">
-                <a v-if="brand.brand != null" @click="getFilter('/' + brand.brand)"> <span class="pull-right">({{brand.brand_count}})</span>{{brand.brand}}</a>
+                <router-link to="/product">
+                  <a
+                    v-if="brand.brand != null"
+                    @click="getFilter('/' + brand.brand)"
+                  >
+                    <span class="pull-right">({{ brand.brand_count }})</span
+                    >{{ brand.brand }}</a
+                  ></router-link
+                >
               </li>
             </ul>
           </div>
         </div>
         <!--/brands_products-->
-
-        <div class="price-range">
-          <!--price-range-->
-          <h2>Price Range</h2>
-          <div class="well text-center">
-            <input
-              type="text"
-              class="span2"
-              value=""
-              data-slider-min="0"
-              data-slider-max="600"
-              data-slider-step="5"
-              data-slider-value="[250,450]"
-              id="sl2"
-            /><br />
-            <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
-          </div>
-        </div>
-        <!--/price-range-->
 
         <div class="shipping text-center">
           <!--shipping-->
@@ -71,11 +66,8 @@
 import { mapState } from "vuex";
 import store from "../../store/store";
 import * as type from "../../store/types";
+import { category, brand } from "@/common/fetch";
 
-import Vue from "vue";
-import VueAxios from "vue-axios";
-import axios from "axios";
-Vue.use(VueAxios, axios);
 
 export default {
   name: "Sidebar",
@@ -92,17 +84,11 @@ export default {
     };
   },
   mounted() {
-    const C_URL = "http://127.0.0.1:8000/api/category";
-    const B_URL = "http://127.0.0.1:8000/api/brand";
-    Vue.axios.get(C_URL).then((res) => {
-      // console.log(res.data);
+    category().then((res) => {
       this.catData = res.data.category;
-      // console.log(this.catData);
     });
-    Vue.axios.get(B_URL).then((res) => {
-      // console.log(res.data);
+    brand().then((res) => {
       this.brandData = res.data.brand;
-      // console.log(this.catData);
     });
   },
   methods: {

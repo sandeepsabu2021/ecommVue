@@ -24,9 +24,8 @@
                 <div class="product-image-wrapper">
                   <div class="single-products">
                     <div class="productinfo text-center">
-                      <!-- <img src="images/shop/product12.jpg" :alt="product.name" /> -->
                       <img
-                        v-bind:src="server + product.thumbnail"
+                        v-bind:src="`${IMG_URL}`+product.thumbnail"
                         :alt="product.name"
                         height="200px"
                       />
@@ -38,30 +37,41 @@
                         ><i class="fa fa-eye"></i> View Product</router-link
                       >
                       <br />
-                      <a href="#" class="btn btn-default add-to-cart"
-                        ><i class="fa fa-shopping-cart"></i>Add to cart</a
+                      <a
+                        v-if="
+                          inCart && inCart.find((pro) => pro.pid === product.id)
+                        "
+                        class="btn btn-default add-to-cart"
+                        @click="added"
+                        ><i class="fa fa-shopping-cart"></i>Added</a
+                      >
+                      <a
+                        v-else
+                        :id="product.id"
+                        @click.once="addCart(product)"
+                        class="btn btn-default add-to-cart"
+                        ><i class="fa fa-shopping-cart"></i>Add to Cart</a
                       >
                     </div>
-                    <div class="product-overlay">
-                      <div class="overlay-content">
-                        <h2>₹ {{ product.price }}</h2>
-                        <p>{{ product.name }}</p>
-                        <router-link
-                          :to="'/product-details/' + product.id"
-                          class="btn btn-default view-product"
-                          ><i class="fa fa-eye"></i> View Product</router-link
-                        ><br />
-                        <a href="#" class="btn btn-default add-to-cart"
-                          ><i class="fa fa-shopping-cart"></i>Add to cart</a
-                        >
-                      </div>
-                    </div>
                   </div>
-                  <div class="choose">
+                  <div class="choose" v-if="mail">
                     <ul class="nav nav-pills nav-justified">
                       <li>
-                        <a href=""
-                          ><i class="fa fa-plus-square"></i>Add to wishlist</a
+                        <a
+                          v-if="
+                            inWish &&
+                            inWish.find((pro) => pro.pid === product.id)
+                          "
+                          class="btn btn-default add-to-cart"
+                          @click="added"
+                          >Added to Wishlist</a
+                        >
+                        <a
+                          v-else
+                          :id="'w' + product.id"
+                          @click.once="addWish(product)"
+                          class="btn btn-default add-to-cart"
+                          ><i class="fa fa-plus-square"></i>Add to Wishlist</a
                         >
                       </li>
                     </ul>
@@ -81,13 +91,7 @@
 
 <script>
 import { mapState } from "vuex";
-import store from "../../store/store";
-import * as type from "../../store/types";
-
-import Vue from "vue";
-import VueAxios from "vue-axios";
-import axios from "axios";
-Vue.use(VueAxios, axios);
+import { IMG_URL } from "@/common/url";
 
 import Sidebar from "../includes/Sidebar.vue";
 
@@ -96,29 +100,90 @@ export default {
   computed: {
     ...mapState({
       proData: (state) => state.proData,
+      mail: (state) => state.email,
     }),
   },
   components: {
     Sidebar,
   },
+  methods: {
+    addCart(pro) {
+      if (localStorage.getItem("myCart") != undefined) {
+        let arr = JSON.parse(localStorage.getItem("myCart"));
+        let obj = {
+          pid: pro.id,
+          quantity: 1,
+          name: pro.name,
+          code: pro.code,
+          price: pro.price,
+          image: pro.thumbnail,
+        };
+        arr.push(obj);
+        localStorage.setItem("myCart", JSON.stringify(arr));
+        this.$store.dispatch("addtocart", arr);
+        document.getElementById(pro.id).innerHTML = "Added";
+      } else {
+        let arr = [];
+        let obj = {
+          pid: pro.id,
+          quantity: 1,
+          name: pro.name,
+          code: pro.code,
+          price: pro.price,
+          image: pro.thumbnail,
+        };
+        arr.push(obj);
+        localStorage.setItem("myCart", JSON.stringify(arr));
+        this.$store.dispatch("addtocart", arr);
+        document.getElementById(pro.id).innerHTML = "Added";
+      }
+    },
+    addWish(pro) {
+      if (localStorage.getItem("myWish") != undefined) {
+        let arr = JSON.parse(localStorage.getItem("myWish"));
+        let obj = {
+          pid: pro.id,
+          quantity: 1,
+          name: pro.name,
+          code: pro.code,
+          price: pro.price,
+          image: pro.thumbnail,
+        };
+        arr.push(obj);
+        localStorage.setItem("myWish", JSON.stringify(arr));
+        this.$store.dispatch("addtowish", arr);
+        document.getElementById("w" + pro.id).innerHTML = "Added to Wishlist";
+      } else {
+        let arr = [];
+        let obj = {
+          pid: pro.id,
+          quantity: 1,
+          name: pro.name,
+          code: pro.code,
+          price: pro.price,
+          image: pro.thumbnail,
+        };
+        arr.push(obj);
+        localStorage.setItem("myWish", JSON.stringify(arr));
+        this.$store.dispatch("addtowish", arr);
+        document.getElementById("w" + pro.id).innerHTML = "Added to Wishlist";
+      }
+    },
+    added() {
+      alert("Product already added");
+    },
+  },
+  created() {
+    this.inCart = JSON.parse(localStorage.getItem("myCart"));
+    this.inWish = JSON.parse(localStorage.getItem("myWish"));
+  },
   data() {
     return {
+      IMG_URL,
       id: null,
-      // proData: undefined,
-      server: "http://127.0.0.1:8000/uploads/thumbnails/",
+      inCart: undefined,
+      inWish: undefined,
     };
-  },
-  mounted() {
-      const P_URL = "http://127.0.0.1:8000/api/shop";
-      Vue.axios.get(P_URL).then((res) => {
-        store.dispatch({
-          type: type.Products,
-          pro: res.data.product,
-        });
-        // console.log(res.data);
-        // this.proData = res.data.product;
-        // console.log(this.proData);
-      });
   },
 };
 </script>

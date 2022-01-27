@@ -19,6 +19,7 @@
                 id="main-contact-form"
                 class="contact-form row"
                 name="contact-form"
+                ref="formContact"
                 @submit.prevent="handleContact"
               >
                 <div class="form-group col-md-6">
@@ -187,6 +188,7 @@ export default {
         .then((res) => {
           if (res.data.error == 0) {
             alert(res.data.msg)
+            this.$router.push({path: '/'});
             
           }
           if (res.data.error == 1) {

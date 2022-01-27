@@ -235,6 +235,7 @@ export default {
         .then((res) => {
           if (res.data.error == 0) {
             alert(res.data.msg + " Login now!");
+            this.$router.push({path: '/'});
           }
           if (res.data.error == 1) {
             alert(res.data.msg);
@@ -262,7 +263,7 @@ export default {
           if (res.data.error == 0) {
             // console.log(jwt_decode(res.data.token));
             saveToken(res.data.token);
-            console.log(res.data.email)
+            // console.log(res.data.email)
             store.dispatch({
               type:type.UserLogin,
               mail: res.data.email

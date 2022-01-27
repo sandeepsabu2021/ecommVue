@@ -56,35 +56,11 @@
                   ><img src="images/home/logo.png" alt=""
                 /></router-link>
               </div>
-              <div class="btn-group pull-right">
+              <div class="btn-group country">
                 <div class="btn-group">
-                  <button
-                    type="button"
-                    class="btn btn-default dropdown-toggle usa"
-                    data-toggle="dropdown"
-                  >
-                    USA
-                    <span class="caret"></span>
+                  <button type="button" class="btn btn-default usa">
+                    India
                   </button>
-                  <ul class="dropdown-menu">
-                    <li><a href="#">Canada</a></li>
-                    <li><a href="#">UK</a></li>
-                  </ul>
-                </div>
-
-                <div class="btn-group">
-                  <button
-                    type="button"
-                    class="btn btn-default dropdown-toggle usa"
-                    data-toggle="dropdown"
-                  >
-                    DOLLAR
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a href="#">Canadian Dollar</a></li>
-                    <li><a href="#">Pound</a></li>
-                  </ul>
                 </div>
               </div>
             </div>
@@ -92,22 +68,23 @@
               <div class="shop-menu pull-right">
                 <ul class="nav navbar-nav">
                   <li>
-                    <a v-if="mail" href="#"
-                      ><i class="fa fa-user"></i> {{ mail }}</a
+                    <router-link v-if="mail" to="/profile"
+                      ><i class="fa fa-user"></i> {{ mail }}</router-link
                     >
-                    <a v-else href="#"><i class="fa fa-user"></i>Account</a>
+                    <router-link v-else to="/login"
+                      ><i class="fa fa-user"></i>Account</router-link
+                    >
                   </li>
                   <li>
-                    <a href="#"><i class="fa fa-star"></i> Wishlist</a>
-                  </li>
-                  <li>
-                    <router-link to="/checkout"
-                      ><i class="fa fa-crosshairs"></i> Checkout</router-link
-                    >
+                    <router-link to="/wishlist" v-if="mail"
+                      ><i class="fa fa-star"></i> Wishlist
+                      <span v-if="wishVal != 0">{{ wishVal }}</span>
+                    </router-link>
                   </li>
                   <li>
                     <router-link to="/cart"
                       ><i class="fa fa-shopping-cart"></i> Cart
+                      <span v-if="cartVal != 0">{{ cartVal }}</span>
                     </router-link>
                   </li>
                   <li>
@@ -147,15 +124,22 @@
               <div class="mainmenu pull-left">
                 <ul class="nav navbar-nav collapse navbar-collapse">
                   <li><router-link to="/">Home</router-link></li>
-                  <li><router-link to="/product">Products</router-link></li>
+                  <li>
+                    <router-link to="/product"
+                      ><a @click="getproduct">Shop</a></router-link
+                    >
+                  </li>
+
                   <li class="dropdown">
-                    <a href="#">Blog<i class="fa fa-angle-down"></i></a>
-                    <ul role="menu" class="sub-menu">
-                      <li><a href="blog.html">Blog List</a></li>
-                      <li><a href="blog-single.html">Blog Single</a></li>
+                    <a href="#">Explore<i class="fa fa-angle-down"></i></a>
+                    <ul v-if="cmsData" role="menu" class="sub-menu">
+                      <li v-for="cms in cmsData" :key="cms.id">
+                        <router-link :to="'/explore/' + cms.url">{{
+                          cms.title
+                        }}</router-link>
+                      </li>
                     </ul>
                   </li>
-                  <li><a href="404.html">404</a></li>
                   <li><router-link to="/contact">Contact</router-link></li>
                 </ul>
               </div>
@@ -178,14 +162,42 @@
 import { mapState } from "vuex";
 import store from "../../store/store";
 import * as type from "../../store/types";
+import { CMS_URL } from "@/common/url";
+import { DEF_URL } from "@/common/url";
+
+import Vue from "vue";
+import VueAxios from "vue-axios";
+import axios from "axios";
+Vue.use(VueAxios, axios);
 
 export default {
   name: "Header",
-
   computed: {
     ...mapState({
       mail: (state) => state.email,
+      page: (state) => state.page,
+      proData: (state) => state.proData,
+      inCart() {
+        return this.$store.getters.inCart;
+      },
+      cartVal() {
+        return this.inCart.length;
+      },
+
+      inWish() {
+        return this.$store.getters.inWish;
+      },
+      wishVal() {
+        return this.inWish.length;
+      },
     }),
+  },
+  data() {
+    return {
+      cmsData: undefined,
+      param: undefined,
+      data: undefined,
+    };
   },
   methods: {
     logout() {
@@ -197,11 +209,49 @@ export default {
         localStorage.removeItem("id_token");
         localStorage.removeItem("email");
         alert("Logged out successfully");
+        this.$router.push({ path: "/" });
       }
     },
+    getproduct() {
+      const P_URL = DEF_URL + "shop";
+      Vue.axios.get(P_URL).then((res) => {
+        store.dispatch({
+          type: type.Products,
+          pro: res.data.product,
+        });
+      });
+    },
+  },
+  watch: {
+    $route(to) {
+      this.param = to.params.id;
+      const P_URL = CMS_URL + this.param;
+      Vue.axios.get(P_URL).then((res) => {
+        this.data = res.data.cms;
+        store.dispatch({
+          type: type.Page,
+          page: res.data.cms,
+        });
+      });
+    },
+  },
+  created() {
+    if (localStorage.getItem("email") != undefined) {
+      store.dispatch({
+        type: type.UserLogin,
+        mail: localStorage.getItem("email"),
+      });
+    }
+    Vue.axios.get(CMS_URL).then((res) => {
+      this.cmsData = res.data.cms;
+    });
   },
 };
 </script>
 
 <style>
+.country {
+  margin-left: 15px;
+  margin-top: 5px;
+}
 </style>
