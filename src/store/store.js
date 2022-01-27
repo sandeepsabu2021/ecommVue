@@ -1,26 +1,35 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { DEF_URL } from '../common/url';
 Vue.use(Vuex);
 
 import VueAxios from "vue-axios";
 import axios from "axios";
 Vue.use(VueAxios, axios);
 
-
-
-
 export default new Vuex.Store({
 
 
-
     state: {
+
         email: '',
         proData: undefined,
+        bannerData: undefined,
         productinfo: undefined,
+        profileData: undefined,
         filter: null,
         P_URL: '',
-        URL: "http://127.0.0.1:8000/api/shop",
+        URL: DEF_URL + "shop",
+        cart: undefined,
+        inWish: JSON.parse(localStorage.getItem('myWish')) ? JSON.parse(localStorage.getItem('myWish')) : [],
+        inCart: JSON.parse(localStorage.getItem('myCart')) ? JSON.parse(localStorage.getItem('myCart')) : [],
+        page: undefined
 
+    },
+
+    getters: {
+        inCart: state => state.inCart,
+        inWish: state => state.inWish
     },
 
     mutations: {
@@ -34,8 +43,11 @@ export default new Vuex.Store({
             }
         },
 
+        isprofile(state, payload) {
+            return state.profileData = payload.profile
+        },
+
         isproducts(state, payload) {
-            console.log(payload.pro)
             return state.proData = payload.pro
         },
 
@@ -45,15 +57,36 @@ export default new Vuex.Store({
 
         iscat(state, payload) {
             state.P_URL = state.URL + payload.filter
-            console.log(state.P_URL)
             Vue.axios.get(state.P_URL).then((res) => {
                 state.proData = res.data.product
 
             })
-            // console.log(state.proData)
-            // console.log(payload.catID)
             return state.proData
-        }
+        },
+
+        isbanner(state, payload) {
+            return state.bannerData = payload.banner
+        },
+
+        isaddtocart(state, id) {
+            state.inCart.push(id)
+        },
+
+        isaddtowish(state, id) {
+            state.inWish.push(id)
+        },
+
+        isupdatecart(state, id) {
+            state.inCart = id
+        },
+
+        isupdatewish(state, id) {
+            state.inWish = id
+        },
+
+        ispage(state, payload) {
+            return state.page = payload.page
+        },
 
     },
 
@@ -66,6 +99,10 @@ export default new Vuex.Store({
             context.commit('isuserlogout', payload)
         },
 
+        profile(context, payload) {
+            context.commit('isprofile', payload)
+        },
+
         products(context, payload) {
             context.commit('isproducts', payload)
         },
@@ -75,8 +112,24 @@ export default new Vuex.Store({
         },
 
         category(context, payload) {
-            
+
             context.commit('iscat', payload)
         },
+
+        banner(context, payload) {
+            context.commit('isbanner', payload)
+        },
+
+        page(context, payload) {
+            context.commit('ispage', payload)
+        },
+
+        addtocart(context, id) { context.commit('isaddtocart', id) },
+
+        addtowish(context, id) { context.commit('isaddtowish', id) },
+
+        updatecart(context, id) { context.commit('isupdatecart', id) },
+
+        updatewish(context, id) { context.commit('isupdatewish', id) }
     }
 })
